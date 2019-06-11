@@ -8,7 +8,7 @@ with open('requirements.txt', 'r') as f:
 
 
 setuptools.setup(
-    name="throttle",
+    name="fn-throttle",
     version="0.0.1",
     author="ZhenningLang",
     author_email="zhenninglang@163.com",

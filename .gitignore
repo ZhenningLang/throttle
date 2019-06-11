@@ -3,4 +3,4 @@
 __pycache__/
 build/
 dist/
-py_proj_init.egg-info/
+*.egg-info/

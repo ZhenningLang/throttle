@@ -7,7 +7,7 @@ Standalone python function call controller
 ### Install
 
 ```bash
-pip3 install throttle
+pip3 install fn-throttle
 ```
 
 ### Usage
