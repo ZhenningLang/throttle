@@ -81,10 +81,10 @@ class SlaveClient:
             s.recv(1024).decode('utf8')
             s.close()
         except:  # noqa
-            logging.warning(f'Slave client fail to connect local port: {self.port}')
+            logging.debug(f'Slave client fail to connect local port: {self.port}')
             return False
         else:
-            logging.warning(f'Slave client succeed to connect local port: {self.port}')
+            logging.info(f'Slave client succeed to connect local port: {self.port}')
             return True
 
     def regist(self, key: str, params: dict) -> bool:

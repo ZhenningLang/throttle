@@ -5,7 +5,10 @@ Distributed file lock util
 import os
 import time
 
-from .configs import DATA_ROOT
+try:
+    from .configs import DATA_ROOT
+except ImportError:
+    DATA_ROOT = '.'
 
 LOCK_FILE = os.path.join(DATA_ROOT, 'dislock')
 TIME_CONVERT_FOLD = 10**10
@@ -22,8 +25,11 @@ class DisFileLock:
     https://docs.python.org/3/library/threading.html#threading.Lock
     """
 
-    def __init__(self):
+    def __init__(self, blocking: bool = True, timeout: float = -1):
         self.lock_timestamp = None
+        self.blocking = blocking
+        self.timeout = timeout
+        self.is_holder = False
 
     @staticmethod
     def _check_lock() -> bool:
@@ -73,7 +79,7 @@ class DisFileLock:
         else:
             return True
 
-    def acquire(self, blocking: bool = True, timeout: float = -1) -> bool:
+    def _acquire(self, blocking: bool = True, timeout: float = -1) -> bool:
         if not blocking and timeout != -1:
             raise ValueError("can't specify a timeout for a non-blocking call")
         s_time = time.time()
@@ -97,7 +103,14 @@ class DisFileLock:
                     else:
                         return False
 
+    def acquire(self, blocking: bool = True, timeout: float = -1) -> bool:
+        self.is_holder = self._acquire(blocking, timeout)
+        return self.is_holder
+
     def release(self):
+        if not self.is_holder:
+            return
+        self.is_holder = False
         if not os.path.exists(LOCK_FILE) or not os.path.isfile(LOCK_FILE):
             raise RuntimeError('release unlocked lock')
         try:
@@ -111,7 +124,7 @@ class DisFileLock:
             raise RuntimeError('release unlocked lock')
 
     def __enter__(self):
-        self.acquire()
+        self.acquire(self.blocking, self.timeout)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

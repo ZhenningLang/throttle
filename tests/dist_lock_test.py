@@ -1,12 +1,13 @@
 import os
 import sys
+# noinspection PyUnresolvedReferences
 import time
 from threading import Thread
 
 CURRENT_PATH = os.path.split(os.path.realpath(__file__))[0]
 sys.path.append(os.path.join(CURRENT_PATH, '..'))
 
-from throttle.lock import DisFileLock  # noqa
+from throttle.lock import DisFileLock, current_timestamp  # noqa
 
 TEST_FILE = 'temp'
 TEST_THREAD_NUM = 100
@@ -44,7 +45,7 @@ def lock_test():
 
 
 if __name__ == '__main__':
-    print('----- No lock test -----')
+    # print('----- No lock test -----')
     # no_lock_test()   # fail
     # time.sleep(3)
     print('\n----- Lock test -----')
