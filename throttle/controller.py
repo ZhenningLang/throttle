@@ -5,6 +5,7 @@ Only master node will manage a controller object
 """
 import logging
 import random
+import time
 
 
 class AbstractController:
@@ -16,16 +17,40 @@ class AbstractController:
         raise NotImplementedError()
 
 
-class AverageController(AbstractController):
+class MinIntervalController(AbstractController):
+    """ Function calls are controlled by specified minimum intervals (in seconds) """
 
     def __init__(self):
-        self.records = []
+        self.configs = {}  # key - min_interval
+        self.calls = {}  # key - last_admit_timestamp
 
     def registry(self, key: str, params: dict) -> bool:
-        pass
+        """
+        :param key:
+        :param params: {'min_interval': float}
+        """
+        try:
+            if 'min_interval' in params:
+                self.configs[key] = float(params['min_interval'])
+                return True
+            else:
+                return False
+        except Exception as e:
+            logging.error(f'In {self.__class__}.registry, params: {params}, error: {e}', exc_info=True)
+            return False
 
     def admit(self, key: str) -> bool:
-        pass
+        if key not in self.calls:
+            self.calls[key] = time.time()
+            return True
+        else:
+            last_admit_timestamp = self.calls[key]
+            current_timestamp = time.time()
+            if current_timestamp - last_admit_timestamp >= self.configs[key]:
+                self.calls[key] = current_timestamp
+                return True
+            else:
+                return False
 
 
 class MockController(AbstractController):

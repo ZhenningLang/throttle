@@ -1,10 +1,26 @@
 # throttle
 
-TODO: one sentence introduction
+Standalone python function call controller
 
 ## How to use
 
+### Install
+
+```bash
+pip3 install throttle
+```
+
+### Usage
+
+```python
+# TODO
+```
+
 ## How it works
+
+...
+
+## Controller
 
 ## TODOs
 
@@ -12,3 +28,5 @@ TODO: one sentence introduction
 - More control algorithm choices
 
 ## About author
+
+zhenninglang@163.com
